@@ -8,6 +8,19 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
 
+# This is the security configuration for Swagger to handle JWT tokens.
+# It defines an API key type of "Bearer", which is the standard for JWTs.
+security_definitions = {
+    'Bearer': {
+        'type': 'apiKey',
+        'name': 'Authorization',
+        'in': 'header'
+    }
+}
+
+# This sets the security scheme for all operations, making all endpoints require a token.
+security_requirements = [{'Bearer': []}]
+
 schema_view = get_schema_view(
     openapi.Info(
         title="Event Scheduling API",
@@ -16,6 +29,8 @@ schema_view = get_schema_view(
     ),
     public=True,
     permission_classes=[permissions.AllowAny],
+    # Add the security configuration to the schema view.
+    security_definitions=security_definitions,
 )
 
 urlpatterns = [
@@ -32,4 +47,3 @@ urlpatterns = [
     path("swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="swagger-ui"),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="redoc-ui"),
 ]
-
